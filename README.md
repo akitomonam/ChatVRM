@@ -63,3 +63,7 @@ ChatVRMでは返答文の音声読み上げにKoemotionのKoeiromap APIを使用
 Koeiromap APIの仕様や利用規約については以下のリンクや公式サイトをご確認ください。
 
 - [https://koemotion.rinna.co.jp/](https://koemotion.rinna.co.jp/)
+
+# VRM
+VRMファイルを用意すれば任意のアバターを読み込める。  
+例えば、[ジョイマン高木のVRM](https://campaign.showroom-live.com/takagi/)を使用することができる。

@@ -11,3 +11,4 @@ services:
     tty: true # コンテナの起動永続化
     volumes:
       - .:/workspace
+    command: sh -c "npm install && npm run dev"

@@ -73,6 +73,19 @@ export default function Home() {
   );
 
   /**
+   * 受け取った文字列をそのまま音声合成して再生する
+   */
+  const handleSpeakEcho = useCallback(
+    async (text: string) => {
+      setChatProcessing(true);
+      const screenplay = textsToScreenplay([text], koeiroParam);
+      handleSpeakAi(screenplay[0]);
+      setChatProcessing(false);
+    },
+    [koeiroParam, handleSpeakAi]
+  );
+
+  /**
    * アシスタントとの会話を行う
    */
   const handleSendChat = useCallback(
@@ -212,6 +225,7 @@ export default function Home() {
         handleClickResetChatLog={() => setChatLog([])}
         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
         onChangeKoeiromapKey={setKoeiromapKey}
+        handleSpeakEcho={handleSpeakEcho}
       />
       <GitHubLink />
     </div>

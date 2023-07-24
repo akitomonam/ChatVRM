@@ -21,6 +21,7 @@ type Props = {
   handleClickResetChatLog: () => void;
   handleClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (key: string) => void;
+  handleSpeakEcho: (text:string) => void;
 };
 export const Menu = ({
   openAiKey,
@@ -36,6 +37,7 @@ export const Menu = ({
   handleClickResetChatLog,
   handleClickResetSystemPrompt,
   onChangeKoeiromapKey,
+  handleSpeakEcho,
 }: Props) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showChatLog, setShowChatLog] = useState(false);
@@ -76,6 +78,10 @@ export const Menu = ({
   const handleClickOpenVrmFile = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
+
+  const handleClickChangeQA = useCallback(() => {
+    handleSpeakEcho("[happy]電通大QAチャットボットに切り替えました．電通大に関することを聞いてね．");
+  }, [handleSpeakEcho]);
 
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,6 +130,12 @@ export const Menu = ({
               onClick={() => setShowChatLog(true)}
             />
           )}
+          <IconButton
+            iconName="24/CommentFill"
+            label="QA BOT"
+            isProcessing={false}
+            onClick={handleClickChangeQA}
+          ></IconButton>
         </div>
       </div>
       {showChatLog && <ChatLog messages={chatLog} />}

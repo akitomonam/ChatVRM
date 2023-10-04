@@ -8,6 +8,7 @@ type Props = {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickSendQAButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 export const MessageInput = ({
@@ -17,6 +18,7 @@ export const MessageInput = ({
   onChangeUserMessage,
   onClickMicButton,
   onClickSendButton,
+  onClickSendQAButton,
 }: Props) => {
   return (
     <div className="absolute bottom-0 z-20 w-screen">
@@ -45,6 +47,13 @@ export const MessageInput = ({
               isProcessing={isChatProcessing}
               disabled={isChatProcessing || !userMessage}
               onClick={onClickSendButton}
+            />
+            <IconButton
+              iconName="24/QuestionOutline"
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+              isProcessing={isChatProcessing}
+              disabled={isChatProcessing || !userMessage}
+              onClick={onClickSendQAButton}
             />
           </div>
         </div>

@@ -80,10 +80,62 @@ export default function Home() {
       setChatProcessing(true);
       const screenplay = textsToScreenplay([text], koeiroParam);
       handleSpeakAi(screenplay[0]);
+      setAssistantMessage(text);
       setChatProcessing(false);
     },
     [koeiroParam, handleSpeakAi]
   );
+
+  /**
+   * アシスタントに電通大のQAを聞く
+   */
+  const handleSendQA = useCallback(
+    async (text: string) => {
+      const newMessage = text;
+      let aiTextLog = "";
+      if (newMessage == null) return;
+
+      setChatProcessing(true);
+      // ユーザーの発言を追加して表示
+      const messageLog: Message[] = [
+        ...chatLog,
+        { role: "user", content: newMessage },
+      ];
+      setChatLog(messageLog);
+
+      // 質問を自作のQAに投げる
+      const url = `http://127.0.0.1:12344/question?question_sentence=${newMessage}`;
+      const options = {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+      };
+      fetch(url, options)
+      .then((response) => response.json())
+      .then((data) => {
+        aiTextLog = data.ans
+        // 音声合成して再生
+        handleSpeakEcho(aiTextLog);
+  
+        // アシスタントの返答をログに追加
+        const messageLogAssistant: Message[] = [
+          ...messageLog,
+          { role: "assistant", content: aiTextLog },
+        ];
+  
+        setChatLog(messageLogAssistant);
+        setChatProcessing(false);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    },
+    [systemPrompt, chatLog, handleSpeakAi, openAiKey, koeiroParam]
+  );
+
+
 
   /**
    * アシスタントとの会話を行う
@@ -210,6 +262,7 @@ export default function Home() {
       <MessageInputContainer
         isChatProcessing={chatProcessing}
         onChatProcessStart={handleSendChat}
+        onChatQAProcessStart={handleSendQA}
       />
       <Menu
         openAiKey={openAiKey}

@@ -79,10 +79,6 @@ export const Menu = ({
     fileInputRef.current?.click();
   }, []);
 
-  const handleClickChangeQA = useCallback(() => {
-    handleSpeakEcho("[happy]電通大QAチャットボットに切り替えました．電通大に関することを聞いてね．");
-  }, [handleSpeakEcho]);
-
   const handleChangeVrmFile = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
@@ -130,12 +126,6 @@ export const Menu = ({
               onClick={() => setShowChatLog(true)}
             />
           )}
-          <IconButton
-            iconName="24/CommentFill"
-            label="QA BOT"
-            isProcessing={false}
-            onClick={handleClickChangeQA}
-          ></IconButton>
         </div>
       </div>
       {showChatLog && <ChatLog messages={chatLog} />}

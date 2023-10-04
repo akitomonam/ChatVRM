@@ -1,6 +1,6 @@
 version: '3'
 services:
-  app:
+  front_app:
     build:
       context: .
       # dockerfile: Dockerfile
@@ -12,3 +12,12 @@ services:
     volumes:
       - .:/workspace
     command: sh -c "npm install && npm run dev"
+  uec_qa:
+    build: ./qa_api
+    working_dir: /qa_api
+    tty: true
+    ports: 
+      - "12344:12344"
+    volumes:
+      - ./qa_api:/qa_api
+    command: sh -c "cd /qa_api && uvicorn main:app --reload --host 0.0.0.0 --port 12344"

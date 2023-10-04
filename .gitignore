@@ -39,3 +39,6 @@ next-env.d.ts
 
 # ignore config files
 apiConfig.json
+
+# python
+__pycache__

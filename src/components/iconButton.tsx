@@ -19,12 +19,12 @@ export const IconButton = ({
         ${rest.className}
       `}
     >
+      {label && <div className="mx-4 font-bold">{label}</div>}
       {isProcessing ? (
         <pixiv-icon name={"24/Dot"} scale="1"></pixiv-icon>
-      ) : (
-        <pixiv-icon name={iconName} scale="1"></pixiv-icon>
+        ) : (
+        iconName && <pixiv-icon name={iconName} scale="1"></pixiv-icon>
       )}
-      {label && <div className="mx-4 font-bold">{label}</div>}
     </button>
   );
 };

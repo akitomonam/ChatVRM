@@ -49,11 +49,12 @@ export const MessageInput = ({
               onClick={onClickSendButton}
             />
             <IconButton
-              iconName="24/QuestionOutline"
+              iconName="24/Question"
               className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
               isProcessing={isChatProcessing}
               disabled={isChatProcessing || !userMessage}
               onClick={onClickSendQAButton}
+              label="Q&A"
             />
           </div>
         </div>

@@ -42,3 +42,6 @@ apiConfig.json
 
 # python
 __pycache__
+
+localhost.key
+localhost.crt

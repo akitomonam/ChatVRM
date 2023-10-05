@@ -104,7 +104,7 @@ export default function Home() {
       setChatLog(messageLog);
 
       // 質問を自作のQAに投げる
-      const url = `http://127.0.0.1:12344/question?question_sentence=${newMessage}`;
+      const url = `https://172.21.64.247:8443/question?question_sentence=${newMessage}`;
       const options = {
         method: 'GET',
         headers: {
@@ -129,6 +129,11 @@ export default function Home() {
       })
       .catch((error) => {
         console.error(error);
+        handleSpeakEcho("すみません、エラーが発生しました．");
+        setChatProcessing(false);
+        // ユーザーの発言を削除(最後の発話を削除)
+        const messageLog: Message[] = chatLog.slice(0, -1);
+        setChatLog(messageLog);
       });
 
     },

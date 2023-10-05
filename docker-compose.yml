@@ -1,5 +1,20 @@
 version: '3'
 services:
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    depends_on:
+      - front_app
+      - uec_qa
+    ports:
+      - 8443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    working_dir: /etc/nginx/ssl
+    tty: true
+    networks:
+      - nginx_network
   front_app:
     build:
       context: .
@@ -13,6 +28,8 @@ services:
     volumes:
       - .:/workspace
     command: sh -c "bash create_certificates.sh && npm install && npm run dev:proxy"
+    networks:
+      - nginx_network
   uec_qa:
     build: ./qa_api
     working_dir: /qa_api
@@ -21,4 +38,10 @@ services:
       - "12344:12344"
     volumes:
       - ./qa_api:/qa_api
-    command: sh -c "cd /qa_api && uvicorn main:app --reload --host 0.0.0.0 --port 12344"
+    command: sh -c "cd /qa_api && uvicorn main:app --reload --host 0.0.0.0 --port 12344 --proxy-headers"
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    driver: bridge

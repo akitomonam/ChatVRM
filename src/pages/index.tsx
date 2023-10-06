@@ -137,7 +137,7 @@ export default function Home() {
       });
 
     },
-    [systemPrompt, chatLog, handleSpeakAi, openAiKey, koeiroParam]
+    [chatLog, handleSpeakEcho]
   );
 
 

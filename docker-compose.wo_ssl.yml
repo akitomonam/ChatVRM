@@ -3,7 +3,6 @@ services:
   front_app:
     build:
       context: .
-      # dockerfile: Dockerfile
     container_name: chatVRM
     ports:
       - 8080:8080

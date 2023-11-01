@@ -15,6 +15,7 @@ import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
+import { getUECInfo } from "@/apiClient";
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
@@ -102,40 +103,26 @@ export default function Home() {
         { role: "user", content: newMessage },
       ];
       setChatLog(messageLog);
-
-      // 質問を自作のQAに投げる
-      const url = `https://172.21.64.247:8443/question?question_sentence=${newMessage}`;
-      const options = {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json'
-        }
-      };
-      fetch(url, options)
-      .then((response) => response.json())
-      .then((data) => {
+      try {
+        const data = await getUECInfo(newMessage);
         aiTextLog = data.ans
         // 音声合成して再生
         handleSpeakEcho(aiTextLog);
-  
         // アシスタントの返答をログに追加
         const messageLogAssistant: Message[] = [
           ...messageLog,
           { role: "assistant", content: aiTextLog },
         ];
-  
         setChatLog(messageLogAssistant);
         setChatProcessing(false);
-      })
-      .catch((error) => {
+      } catch(error) {
         console.error(error);
         handleSpeakEcho("すみません、エラーが発生しました．");
         setChatProcessing(false);
         // ユーザーの発言を削除(最後の発話を削除)
         const messageLog: Message[] = chatLog.slice(0, -1);
         setChatLog(messageLog);
-      });
-
+      }
     },
     [chatLog, handleSpeakEcho]
   );

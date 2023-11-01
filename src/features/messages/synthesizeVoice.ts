@@ -30,7 +30,7 @@ export async function synthesizeVoiceApi(
     apiKey: apiKey,
   };
 
-  const res = await fetch("/api/tts", {
+  const res = await fetch("/ced-iot/api/tts", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -15,7 +15,7 @@ import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
-import { getUECInfo } from "@/apiClient";
+import { getUECInfoviaLocalAPI } from "@/apiClient";
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
@@ -104,7 +104,7 @@ export default function Home() {
       ];
       setChatLog(messageLog);
       try {
-        const data = await getUECInfo(newMessage);
+        const data = await getUECInfoviaLocalAPI(newMessage);
         aiTextLog = data.ans
         // 音声合成して再生
         handleSpeakEcho(aiTextLog);

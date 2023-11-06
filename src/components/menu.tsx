@@ -21,6 +21,7 @@ type Props = {
   handleClickResetChatLog: () => void;
   handleClickResetSystemPrompt: () => void;
   onChangeKoeiromapKey: (key: string) => void;
+  handleSpeakEcho: (key: string) => void;
 };
 export const Menu = ({
   openAiKey,

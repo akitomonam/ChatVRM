@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:proxy": "next dev -p 4000 & local-ssl-proxy --key localhost.key --cert localhost.crt --source 3000 --target 4000",
     "build": "next build",
     "start": "next build && next start",
     "export": "next export",
@@ -15,6 +16,7 @@
     "@types/dom-speech-recognition": "^0.0.1",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
+    "local-ssl-proxy": "^2.0.5",
     "next": "13.2.4",
     "node-fetch": "^3.3.1",
     "openai": "^3.2.1",

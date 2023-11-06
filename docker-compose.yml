@@ -1,6 +1,21 @@
 version: '3'
 services:
-  app:
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    depends_on:
+      - front_app
+      - uec_qa
+    ports:
+      - 8443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    working_dir: /etc/nginx/ssl
+    tty: true
+    networks:
+      - nginx_network
+  front_app:
     build:
       context: .
       # dockerfile: Dockerfile
@@ -8,6 +23,31 @@ services:
     ports:
       - 8080:8080
       - 3000:3000
+      - 4000:4000
     tty: true # コンテナの起動永続化
     volumes:
       - .:/workspace
+    command: sh -c "bash create_certificates.sh && npm install && npm run dev:proxy"
+    networks:
+      - nginx_network
+  uec_qa:
+    build: ./qa_api
+    working_dir: /qa_api
+    tty: true
+    ports: 
+      - "12344:12344"
+    volumes:
+      - ./qa_api:/qa_api
+    command: sh -c "cd /qa_api && uvicorn main:app --reload --host 0.0.0.0 --port 12344 --proxy-headers"
+    networks:
+      - nginx_network
+  get_uec_info:
+    build: ./get_uec_info
+    working_dir: /get_uec_info
+    tty: true
+    volumes:
+      - ./get_uec_info:/get_uec_info
+
+networks:
+  nginx_network:
+    driver: bridge

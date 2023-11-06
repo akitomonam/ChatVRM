@@ -8,6 +8,7 @@ type Props = {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   onClickSendButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickSendQAButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMicButton: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 export const MessageInput = ({
@@ -17,6 +18,7 @@ export const MessageInput = ({
   onChangeUserMessage,
   onClickMicButton,
   onClickSendButton,
+  onClickSendQAButton,
 }: Props) => {
   return (
     <div className="absolute bottom-0 z-20 w-screen">
@@ -46,10 +48,18 @@ export const MessageInput = ({
               disabled={isChatProcessing || !userMessage}
               onClick={onClickSendButton}
             />
+            <IconButton
+              iconName="24/Question"
+              className="bg-secondary hover:bg-secondary-hover active:bg-secondary-press disabled:bg-secondary-disabled"
+              isProcessing={isChatProcessing}
+              disabled={isChatProcessing || !userMessage}
+              onClick={onClickSendQAButton}
+              label="Q&A"
+            />
           </div>
         </div>
         <div className="py-4 bg-[#413D43] text-center text-white font-Montserrat">
-          powered by VRoid, Koemotion, ChatGPT API
+          powered by VRoid, Koemotion, ChatGPT API, UEC-CED
         </div>
       </div>
     </div>

@@ -15,13 +15,14 @@ import { Introduction } from "@/components/introduction";
 import { Menu } from "@/components/menu";
 import { GitHubLink } from "@/components/githubLink";
 import { Meta } from "@/components/meta";
+import { getUECInfoviaLocalAPI } from "@/apiClient";
 
 export default function Home() {
   const { viewer } = useContext(ViewerContext);
 
   const [systemPrompt, setSystemPrompt] = useState(SYSTEM_PROMPT);
-  const [openAiKey, setOpenAiKey] = useState("");
-  const [koeiromapKey, setKoeiromapKey] = useState("");
+  const [openAiKey, setOpenAiKey] = useState(process.env.NEXT_PUBLIC_OPENAI_APIKEY);
+  const [koeiromapKey, setKoeiromapKey] = useState(process.env.NEXT_PUBLIC_KOEIRO_APIKEY);
   const [koeiroParam, setKoeiroParam] = useState<KoeiroParam>(DEFAULT_PARAM);
   const [chatProcessing, setChatProcessing] = useState(false);
   const [chatLog, setChatLog] = useState<Message[]>([]);
@@ -71,6 +72,72 @@ export default function Home() {
     },
     [viewer, koeiromapKey]
   );
+
+  /**
+   * 受け取った文字列をそのまま音声合成して再生する
+   */
+  const handleSpeakEcho = useCallback(
+    async (text: string) => {
+      setChatProcessing(true);
+      // 句読点や疑問符、感嘆符などでテキストを分割する
+      const sentences = text.match(/[^、。．！？]+[、。．！？\n]/g);
+      if (sentences) {
+        for (const sentence of sentences) {
+          // 文ごとに音声合成して再生する
+          const trimmedSentence = sentence.trim(); // 空白を除去
+          if (trimmedSentence.length > 0) {
+            const screenplay = textsToScreenplay([trimmedSentence], koeiroParam);
+            await handleSpeakAi(screenplay[0]);
+          }
+        }
+      }
+      setAssistantMessage(text);
+      setChatProcessing(false);
+    },
+    [koeiroParam, handleSpeakAi]
+  );
+
+  /**
+   * アシスタントに電通大のQAを聞く
+   */
+  const handleSendQA = useCallback(
+    async (text: string) => {
+      const newMessage = text;
+      let aiTextLog = "";
+      if (newMessage == null) return;
+
+      setChatProcessing(true);
+      // ユーザーの発言を追加して表示
+      const messageLog: Message[] = [
+        ...chatLog,
+        { role: "user", content: newMessage },
+      ];
+      setChatLog(messageLog);
+      try {
+        const data = await getUECInfoviaLocalAPI(newMessage);
+        aiTextLog = data.ans
+        // 音声合成して再生
+        handleSpeakEcho(aiTextLog);
+        // アシスタントの返答をログに追加
+        const messageLogAssistant: Message[] = [
+          ...messageLog,
+          { role: "assistant", content: aiTextLog },
+        ];
+        setChatLog(messageLogAssistant);
+        setChatProcessing(false);
+      } catch(error) {
+        console.error(error);
+        handleSpeakEcho("すみません、エラーが発生しました．");
+        setChatProcessing(false);
+        // ユーザーの発言を削除(最後の発話を削除)
+        const messageLog: Message[] = chatLog.slice(0, -1);
+        setChatLog(messageLog);
+      }
+    },
+    [chatLog, handleSpeakEcho]
+  );
+
+
 
   /**
    * アシスタントとの会話を行う
@@ -197,6 +264,7 @@ export default function Home() {
       <MessageInputContainer
         isChatProcessing={chatProcessing}
         onChatProcessStart={handleSendChat}
+        onChatQAProcessStart={handleSendQA}
       />
       <Menu
         openAiKey={openAiKey}
@@ -212,6 +280,7 @@ export default function Home() {
         handleClickResetChatLog={() => setChatLog([])}
         handleClickResetSystemPrompt={() => setSystemPrompt(SYSTEM_PROMPT)}
         onChangeKoeiromapKey={setKoeiromapKey}
+        handleSpeakEcho={handleSpeakEcho}
       />
       <GitHubLink />
     </div>

@@ -79,8 +79,18 @@ export default function Home() {
   const handleSpeakEcho = useCallback(
     async (text: string) => {
       setChatProcessing(true);
-      const screenplay = textsToScreenplay([text], koeiroParam);
-      handleSpeakAi(screenplay[0]);
+      // 句読点や疑問符、感嘆符などでテキストを分割する
+      const sentences = text.match(/[^、。．！？]+[、。．！？\n]/g);
+      if (sentences) {
+        for (const sentence of sentences) {
+          // 文ごとに音声合成して再生する
+          const trimmedSentence = sentence.trim(); // 空白を除去
+          if (trimmedSentence.length > 0) {
+            const screenplay = textsToScreenplay([trimmedSentence], koeiroParam);
+            await handleSpeakAi(screenplay[0]);
+          }
+        }
+      }
       setAssistantMessage(text);
       setChatProcessing(false);
     },

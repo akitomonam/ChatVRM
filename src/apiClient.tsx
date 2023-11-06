@@ -11,13 +11,11 @@ export const apiViaClient = axios.create({
 export const getUECInfo = async (newMessage: string) => {
     const encodedMessage = encodeURIComponent(newMessage);
     const response = await apiClient.get(`/question?question_sentence=${encodedMessage}`);
-    console.log("response.data", response.data);
     return response.data;
 }
 
 export const helloWorld = async () => {
     const response = await apiClient.get(`/helloworld`);
-    console.log("response.data", response.data);
     return response.data;
 }
 
